@@ -3,30 +3,32 @@ const tokens = {
   admin: {
     token: 'admin-token'
   },
-  editor: {
-    token: 'editor-token'
+  student : {
+    token: 'student-token'
   }
 }
 
 const users = {
   'admin-token': {
     roles: ['admin'],
-    introduction: 'I am a super administrator',
+    introduction: '我是管理员',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Super Admin'
+    // avatar: 'https://sm.ms/image/7WZeF9oqURQ2pmT',
+    name: '管理员'
   },
   'editor-token': {
-    roles: ['editor'],
-    introduction: 'I am an editor',
+    roles: ['student'],
+    introduction: '我是学生',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Normal Editor'
+    // avatar: 'https://sm.ms/image/tRyLHQBSXvcnqfE',
+    name: '学生'
   }
 }
 
 module.exports = [
   // user login
   {
-    url: '/vue-admin-template/user/login',
+    url: '/user/login',
     type: 'post',
     response: config => {
       const { username } = config.body
@@ -35,13 +37,13 @@ module.exports = [
       // mock error
       if (!token) {
         return {
-          code: 60204,
+          status: 60204,
           message: 'Account and password are incorrect.'
         }
       }
 
       return {
-        code: 20000,
+        status: 200,
         data: token
       }
     }
@@ -49,22 +51,22 @@ module.exports = [
 
   // get user info
   {
-    url: '/vue-admin-template/user/info\.*',
+    url: '/user/info\.*',
     type: 'get',
     response: config => {
       const { token } = config.query
+      //const info = users[token]
       const info = users[token]
-
       // mock error
       if (!info) {
         return {
-          code: 50008,
+          status: 50008,
           message: 'Login failed, unable to get user details.'
         }
       }
 
       return {
-        code: 20000,
+        status: 200,
         data: info
       }
     }
@@ -72,11 +74,11 @@ module.exports = [
 
   // user logout
   {
-    url: '/vue-admin-template/user/logout',
+    url: '/user/logout',
     type: 'post',
     response: _ => {
       return {
-        code: 20000,
+        status: 200,
         data: 'success'
       }
     }

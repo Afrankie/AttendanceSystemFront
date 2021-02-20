@@ -27,15 +27,30 @@ const mutations = {
   }
 }
 
+const tokens = {
+  administrator: {
+    token: 'admin-token'
+  },
+  student : {
+    token: 'student-token'
+  }
+}
+
+const avatarUrl = 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
+
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { id, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+      login({ id: id.trim(), password: password }).then(response => {
+        const { content } = response
+        const token = tokens[content.uRoleName];
+        commit('SET_TOKEN', token)
+        commit('SET_NAME', content.uName)
+        commit('SET_AVATAR', avatarUrl)
+
+        setToken(token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -46,28 +61,37 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      // getInfo(state.token).then(response => {
+      //   const { data } = response
 
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
+      //   if (!data) {
+      //     return reject('Verification failed, please Login again.')
+      //   }
 
-        const { name, avatar } = data
+      //   const { name, avatar } = data
 
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+      //   commit('SET_NAME', name)
+      //   commit('SET_AVATAR', avatar)
+      //   resolve(data)
+      // }).catch(error => {
+      //   reject(error)
+      // })
+      const data = {
+        avatar:avatarUrl
+      }
+      if (state.token) {
         resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      } else {
+        console.log("getInfo reject")
+        reject()
+      }
     })
   },
 
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
