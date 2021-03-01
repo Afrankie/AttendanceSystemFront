@@ -55,28 +55,6 @@ export const constantRoutes = [
     }]
   },
 
-  {
-    path: '/user',
-    component: Layout,
-    children: [{
-      path: 'list',
-      name: 'User',
-      component: () => import('@/views/student/index'),
-      meta: { title: '学生管理', icon: '' }
-    }]
-  },
-
-  {
-    path: '/face',
-    component: Layout,
-    children: [{
-      path: 'manage',
-      name: 'Face',
-      component: () => import('@/views/face/index'),
-      meta: { title: '人脸上传', icon: '' }
-    }]
-  },
-
   // {
   //   path: '/example',
   //   component: Layout,
@@ -122,10 +100,49 @@ export const constantRoutes = [
   //     }
   //   ]
   // },
+  
+  // 404 page must be placed at the end !!!
+]
 
+export const asyncRoutes = [
+  // {
+  //   path: '/system',
+  //   component: Layout,
+  //   redirect: '/system/user',
+  //   name: 'system',
+  //   meta: {
+  //     title: '系统管理',
+  //     icon: 'nested',
+  //     perms: ['*']   添加可访问此路由的权限
+  //   },
+  // },
+  {
+    path: '/user',
+    component: Layout,
+    children: [{
+      path: 'list',
+      name: 'User',
+      component: () => import('@/views/student/index'),
+      meta: { title: '学生管理', icon: '', roles: ['administrator'] }
+    }]
+  },
+
+  {
+    path: '/face',
+    component: Layout,
+    children: [{
+      path: 'manage',
+      name: 'Face',
+      component: () => import('@/views/face/index'),
+      meta: { title: '人脸上传', icon: '', roles: ['student'] }
+    }]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
+  
+
 ]
+
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support

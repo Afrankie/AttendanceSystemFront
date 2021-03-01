@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    roles:[]   //添加角色变量
   }
 }
 
@@ -24,6 +25,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ROLES: (state,roles) => {
+    state.roles = roles
   }
 }
 
@@ -49,7 +53,9 @@ const actions = {
         commit('SET_TOKEN', token)
         commit('SET_NAME', content.uName)
         commit('SET_AVATAR', avatarUrl)
-
+        var roles = []
+        roles.push(content.uRoleName)
+        commit('SET_ROLES', roles)
         setToken(token)
         resolve()
       }).catch(error => {
@@ -77,8 +83,13 @@ const actions = {
       //   reject(error)
       // })
       const data = {
-        avatar:avatarUrl
+        avatar:avatarUrl,
+        roles:state.roles
       }
+      // console.log(1111)
+      // console.log(data)
+      // console.log(state.roles)
+
       if (state.token) {
         resolve(data)
       } else {
@@ -95,6 +106,7 @@ const actions = {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
+        commit('SET_ROLES', [])
         resolve()
       }).catch(error => {
         reject(error)
@@ -107,6 +119,7 @@ const actions = {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
       commit('RESET_STATE')
+      commit('SET_ROLES', [])
       resolve()
     })
   }

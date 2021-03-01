@@ -22,7 +22,13 @@ router.beforeEach(async(to, from, next) => {
 
   if (hasToken) {
     console.log("hastoken")  
+          // await store.dispatch('user/resetToken')
 
+    const { roles } = await store.dispatch('user/getInfo')
+    const accessRoutes = await store.dispatch('permission/generateRoutes',roles)
+    // console.log("src permission " + JSON.stringify(roles) + "11")
+    // console.log("acessroutes " + JSON.stringify(accessRoutes))
+    router.addRoutes(accessRoutes)
     if (to.path === '/user/login') {
       // if is logged in, redirect to the home page
       next({ path: '/record/list' })
@@ -34,9 +40,9 @@ router.beforeEach(async(to, from, next) => {
       } else {
         try {
           // get user info
-          await store.dispatch('user/getInfo')
+          
 
-          next()
+          next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
