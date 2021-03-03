@@ -33,7 +33,8 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // const hasGetUserInfo = store.getters.name
       // const hasRoles = store.getters.roles && store.getters.roles.length > 0
-      if (store.getters.first === "false") {
+      // store.getters.first === "false"
+      if (false) {
         next()
       } else {
         cleanFirst()

@@ -93,7 +93,7 @@ const actions = {
       const data = {
         avatar:avatarUrl
       }
-      console.log(typeof(state.roles))
+      // console.log(typeof(state.roles))
       if (typeof(state.roles) === "object") {
         data.roles = state.roles;
       } else {
