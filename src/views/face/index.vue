@@ -142,8 +142,8 @@
                   title: '上传成功',
                   message: responseText.statusMsg,
                   type: 'success'
-                });
-                this.$router.push('/face/canSave')
+                })
+                // this.$router.push('/face/canSave')
               } else {
               	this.$notify.error({
                   title: '上传失败',

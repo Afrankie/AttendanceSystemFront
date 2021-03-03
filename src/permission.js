@@ -3,7 +3,7 @@ import store from './store'
 import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import { getToken, cleanFirst } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
@@ -22,31 +22,34 @@ router.beforeEach(async(to, from, next) => {
 
   if (hasToken) {
     console.log("hastoken")  
-          // await store.dispatch('user/resetToken')
+    // await store.dispatch('user/resetToken')
 
-    const { roles } = await store.dispatch('user/getInfo')
-    const accessRoutes = await store.dispatch('permission/generateRoutes',roles)
-    // console.log("src permission " + JSON.stringify(roles) + "11")
-    // console.log("acessroutes " + JSON.stringify(accessRoutes))
-    router.addRoutes(accessRoutes)
+    
     if (to.path === '/user/login') {
       // if is logged in, redirect to the home page
-      next({ path: '/record/list' })
+      // next({ path: '/record/list' })
+      next({ path: '/' })
       NProgress.done()
     } else {
-      const hasGetUserInfo = store.getters.name
-      if (hasGetUserInfo) {
+      // const hasGetUserInfo = store.getters.name
+      // const hasRoles = store.getters.roles && store.getters.roles.length > 0
+      if (store.getters.first === "false") {
         next()
       } else {
+        cleanFirst()
         try {
           // get user info
-          
-
-          next({ ...to, replace: true })
+          const { roles } = await store.dispatch('user/getInfo')
+          console.log(roles)
+          const accessRoutes = await store.dispatch('permission/generateRoutes',roles)
+          router.addRoutes(accessRoutes)
+          next()
+          // next({ ...to, replace: true })
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          // Message.error(error || 'Has Error')
+          console.log("获取用户权限失败" + error)
           next(`user/login?redirect=${to.path}`)
           NProgress.done()
         }
@@ -62,6 +65,7 @@ router.beforeEach(async(to, from, next) => {
       // other pages that do not have permission to access are redirected to the login page.
       console.log("notoken and no in whiteListlist")
       next(`/user/login?redirect=${to.path}`)
+      // next("/user/login")
       NProgress.done()
     }
   }

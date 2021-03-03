@@ -143,7 +143,7 @@
 		                  title: '重置成功',
 		                  type: 'success'
 		                })
-            			this.$router.push('/user/list')
+            			// this.$router.push('/user/list')
 					} else {
 						this.$notify.error({
 		                  title: '重置失败',
